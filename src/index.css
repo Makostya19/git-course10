@@ -1,0 +1,25 @@
+.pagination {
+  display: flex;
+  justify-content: center;
+  list-style: none;
+  padding: 0;
+  margin: 20px 0;
+}
+
+.pagination li {
+  margin: 0 2px;
+}
+
+.pagination li button {
+  min-width: 32px;
+  height: 32px;
+  border: 1px solid #5cb85c;
+  background: #fff;
+  color: #5cb85c;
+  cursor: pointer;
+}
+
+.pagination li button.active {
+  background: #5cb85c;
+  color: #fff;
+}
