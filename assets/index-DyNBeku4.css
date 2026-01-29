@@ -1,0 +1,1 @@
+.pagination{justify-content:center;margin:20px 0;padding:0;list-style:none;display:flex}.pagination li{margin:0 2px}.pagination li button{color:#5cb85c;cursor:pointer;background:#fff;border:1px solid #5cb85c;min-width:32px;height:32px}.pagination li button.active{color:#fff;background:#5cb85c}
