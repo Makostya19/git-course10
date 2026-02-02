@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, Link } from 'react-router-dom';
 import ArticlesPage from './pages/ArticlesPage';
 import ArticlePage from './pages/ArticlePage';
 
@@ -7,21 +7,27 @@ function App() {
     <>
       <nav className="navbar navbar-light">
         <div className="container">
-          <a className="navbar-brand" href="/">
+          <Link className="navbar-brand" to="/">
             Realworld Blog
-          </a>
+          </Link>
+
           <ul className="nav navbar-nav pull-xs-right">
             <li className="nav-item">
-              <a className="nav-link active" href="/">Home</a>
+              <Link className="nav-link active" to="/">
+                Home
+              </Link>
             </li>
+
             <li className="nav-item">
-              <a className="nav-link" href="/">New Post</a>
+              <Link className="nav-link" to="/login">
+                Sign in
+              </Link>
             </li>
+
             <li className="nav-item">
-              <a className="nav-link" href="/">Settings</a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="/">eni9mu5</a>
+              <Link className="nav-link" to="/register">
+                Sign up
+              </Link>
             </li>
           </ul>
         </div>
