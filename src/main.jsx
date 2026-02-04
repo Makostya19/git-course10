@@ -12,7 +12,7 @@ if (redirect) {
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename="/git-course10">
       <App />
     </BrowserRouter>
   </React.StrictMode>
