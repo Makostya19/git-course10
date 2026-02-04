@@ -1,16 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
-    <meta charset="UTF-8" />
-    <title>RealWorld Blog</title>
-
-    <link
-      rel="stylesheet"
-      href="https://demo.productionready.io/main.css"
-    />
+    <meta charset="utf-8" />
+    <script>
+      sessionStorage.redirect = location.pathname;
+      location.replace('/git-course10/');
+    </script>
   </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
 </html>
