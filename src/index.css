@@ -19,8 +19,8 @@
 }
 
 .header .header-inner {
-  display: flex;
-  align-items: center;
+  display: flex !important;
+  align-items: center !important;
   gap: 6rem !important; 
 }
 
@@ -90,9 +90,11 @@ form {
 }
 
 form h1 {
-  text-align: center;
-  margin-bottom: 1.5rem;
-  font-size: 2rem;
+  text-align: center !important;
+  text-transform: uppercase !important; 
+  font-size: 2rem !important;
+  font-weight: bold !important;
+  margin-bottom: 1.5rem !important;
 }
 
 input, textarea {
@@ -113,12 +115,4 @@ textarea {
   display: flex;
   gap: 0.5rem;
   margin-bottom: 1rem;
-}
-
-form h1 {
-  text-align: center;      
-  text-transform: uppercase; 
-  font-size: 2rem;
-  font-weight: bold;
-  margin-bottom: 1.5rem;
 }
