@@ -1,5 +1,10 @@
 const API_URL = 'https://realworld.habsida.net/api';
 
+function getAuthHeaders() {
+  const token = localStorage.getItem('token');
+  return token ? { Authorization: `Token ${token}` } : {};
+}
+
 export async function getArticles(page = 1) {
   const limit = 10;
   const offset = (page - 1) * limit;
@@ -24,3 +29,54 @@ export async function getArticle(slug) {
 
   return res.json();
 }
+
+export async function registerUser(data) {
+  const res = await fetch(`${API_URL}/users`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ user: { email: data.email, username: data.username, password: data.password } }),
+  });
+
+  const json = await res.json();
+  if (!res.ok) throw json;
+  return json;
+}
+
+export async function loginUser(data) {
+  const res = await fetch(`${API_URL}/users/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ user: { email: data.email, password: data.password } }),
+  });
+
+  const json = await res.json();
+  if (!res.ok) throw json;
+  return json;
+}
+
+export async function getCurrentUser() {
+  const res = await fetch(`${API_URL}/user`, { headers: { ...getAuthHeaders() } });
+  if (!res.ok) throw new Error('Не авторизован');
+  return res.json();
+}
+
+export async function updateUser(data) {
+  const res = await fetch(`${API_URL}/user`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+    body: JSON.stringify({ user: data }),
+  });
+
+  const json = await res.json();
+  if (!res.ok) throw json;
+  return json;
+}
+
+export default {
+  getArticles,
+  getArticle,
+  register: registerUser,
+  login: loginUser,
+  getCurrentUser,
+  updateUser
+};

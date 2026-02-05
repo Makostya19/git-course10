@@ -1,4 +1,54 @@
-#root {
+* {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+#root {
+  width: 100%;
+}
+
+.header {
+  display: flex;
+  justify-content: center; /* Центрируем весь блок */
+  align-items: center;
+  width: 100%;
+  padding: 1rem 2rem;
+  background-color: white;
+  border-bottom: 1px solid #ddd;
+}
+
+header.header .header-inner {
+  display: flex;
+  align-items: center;
+  gap: 6rem !important; /* повышенный приоритет */
+}
+
+.header .logo {
+  font-weight: bold;
+  color: #5cb85c;
+  text-decoration: none;
+  font-size: 1.2rem;
+}
+
+.header .nav-buttons {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.header .nav-buttons a,
+.header .nav-buttons button {
+  text-decoration: none;
+  color: #333;
+  font-size: 1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.header .profile-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
