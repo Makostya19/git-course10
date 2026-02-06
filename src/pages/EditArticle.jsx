@@ -35,10 +35,9 @@ export default function EditArticle() {
 
   if (!article) return <p>Loading...</p>;
 
-  return (
+return (
     <div>
-      <h1>Edit Article</h1>
-      <FormArticle initialValues={article} onSubmit={handleUpdate} />
+        <FormArticle initialValues={article} onSubmit={handleUpdate} />
     </div>
-  );
+);
 }
