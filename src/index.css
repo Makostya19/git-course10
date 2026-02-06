@@ -82,7 +82,7 @@ button.logout:hover {
 
 form {
   max-width: 600px;
-  margin: 2rem auto;
+  margin: 4rem auto;     
   padding: 2rem;
   background-color: white;
   border-radius: 8px;
@@ -94,10 +94,11 @@ form h1 {
   text-transform: uppercase !important; 
   font-size: 2rem !important;
   font-weight: bold !important;
-  margin-bottom: 1.5rem !important;
+  margin-bottom: 2rem !important;  
 }
 
-input, textarea {
+input,
+textarea {
   width: 100%;
   padding: 0.8rem;
   margin-bottom: 1rem;
@@ -115,4 +116,161 @@ textarea {
   display: flex;
   gap: 0.5rem;
   margin-bottom: 1rem;
+}
+
+form label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  color: #333;
+  margin-bottom: 1.5rem;
+}
+
+form label input[type="checkbox"] {
+  width: auto;
+  margin: 0;
+}
+
+form button[type="submit"] {
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+body {
+  background-color: #f3f3f3;
+}
+
+.container {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.article-page .banner {
+  background: #f3f3f3;
+  padding: 3rem 0;
+  margin-bottom: 2rem;
+}
+
+.article-page .banner h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+
+.article-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.article-meta .info {
+  display: flex;
+  flex-direction: column;
+}
+
+.article-meta .author {
+  font-weight: bold;
+  color: #5cb85c;
+}
+
+.article-meta .date {
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.article-meta span:last-child {
+  margin-left: auto;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.article-meta .btn {
+  font-size: 0.85rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+}
+
+.btn-outline-secondary {
+  border: 1px solid #999;
+  color: #999;
+  background: transparent;
+}
+
+.btn-outline-secondary:hover {
+  background: #999;
+  color: #fff;
+}
+
+.btn-outline-danger {
+  border: 1px solid #d9534f;
+  color: #d9534f;
+  background: transparent;
+}
+
+.btn-outline-danger:hover {
+  background: #d9534f;
+  color: #fff;
+}
+
+.container.page {
+  max-width: 740px;
+  margin: auto;
+  padding: 0 1rem;
+}
+
+.article-content p {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  margin-bottom: 1rem;
+}
+
+.article-page .banner {
+  background-color: #1a1a1a;
+  color: #fff; 
+  padding: 4rem 0;
+  text-align: center;
+}
+
+.article-page .banner h1 {
+  color: #fff;
+  font-size: 3rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.article-page .banner .article-meta .info .author,
+.article-page .banner .article-meta .info .date {
+  color: #ddd; 
+}
+
+.article-page .article-meta a,
+.article-page .article-meta button {
+  color: #fff; 
+  border-color: #fff;
+}
+
+.article-page .article-meta a:hover,
+.article-page .article-meta button:hover {
+  background-color: #fff;
+  color: #000;
+}
+
+.profile-page .user-info {
+  background: #333;
+  color: #fff;
+  padding: 3rem 0;
+  text-align: center;
+}
+
+.profile-page .user-img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+}
+
+.profile-page .user-name {
+  font-size: 2rem;
+  font-weight: bold;
 }

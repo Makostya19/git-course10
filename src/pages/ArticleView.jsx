@@ -39,19 +39,49 @@ export default function ArticleView() {
   const isAuthor = user && user.username === article.author.username;
 
   return (
-    <div>
-      <h1>{article.title}</h1>
-      <p>{article.description}</p>
-      <ReactMarkdown>{article.body}</ReactMarkdown>
+    <div className="article-page">
+      <div className="banner">
+        <div className="container">
+          <h1>{article.title}</h1>
 
-      {isAuthor && (
-        <div>
-          <Link to={`/articles/${slug}/edit`}>Edit</Link>
-          <button onClick={() => setShowModal(true)}>Delete</button>
+          <div className="article-meta">
+            <div className="info">
+              <span className="author">{article.author.username}</span>
+              <span className="date">
+                {new Date(article.createdAt).toDateString()}
+              </span>
+            </div>
+
+            {isAuthor && (
+              <span>
+                <Link
+                  to={`/articles/${slug}/edit`}
+                  className="btn btn-outline-secondary btn-sm"
+                >
+                  ✎ Edit Article
+                </Link>
+
+                <button
+                  className="btn btn-outline-danger btn-sm"
+                  onClick={() => setShowModal(true)}
+                >
+                  🗑 Delete Article
+                </button>
+              </span>
+            )}
+          </div>
         </div>
-      )}
+      </div>
 
-      {/* ✅ CONFIRMATION MODAL */}
+      <div className="container page">
+        <div className="row article-content">
+          <div className="col-md-12">
+            <p>{article.description}</p>
+            <ReactMarkdown>{article.body}</ReactMarkdown>
+          </div>
+        </div>
+      </div>
+
       <ConfirmModal
         open={showModal}
         onCancel={() => setShowModal(false)}

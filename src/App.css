@@ -10,7 +10,7 @@
 
 .header {
   display: flex;
-  justify-content: center; /* Центрируем весь блок */
+  justify-content: center; 
   align-items: center;
   width: 100%;
   padding: 1rem 2rem;
@@ -21,7 +21,7 @@
 header.header .header-inner {
   display: flex;
   align-items: center;
-  gap: 6rem !important; /* повышенный приоритет */
+  gap: 6rem !important; 
 }
 
 .header .logo {

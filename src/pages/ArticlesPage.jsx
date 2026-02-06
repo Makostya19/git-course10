@@ -34,38 +34,56 @@ export default function ArticlesPage() {
       </div>
 
       <div className="container page">
-        {loading && <p>Loading...</p>}
+        <div className="row">
+          <div className="col-md-9">
 
-        {articles.map((article) => (
-          <div className="article-preview" key={article.slug}>
-            <div className="article-meta">
-              <span>{article.author.username}</span>
-              <span className="date">{new Date(article.createdAt).toDateString()}</span>
-              <button
-                className="btn btn-outline-primary btn-sm pull-xs-right"
-                disabled={!isAuth}
-                title={!isAuth ? 'Login to like articles' : ''}
-              >
-                ♥ {article.favoritesCount}
-              </button>
-            </div>
-            <Link to={`/articles/${article.slug}`} className="preview-link">
-              <h1>{article.title}</h1>
-              <p>{article.description}</p>
-              <span>Read more...</span>
-            </Link>
+            {loading && <p>Loading...</p>}
+
+            {articles.map((article) => (
+              <div className="article-preview" key={article.slug}>
+                <div className="article-meta">
+                  <div className="info">
+                    <span className="author">{article.author.username}</span>
+                    <span className="date">
+                      {new Date(article.createdAt).toDateString()}
+                    </span>
+                  </div>
+
+                  <button
+                    className="btn btn-outline-primary btn-sm pull-xs-right"
+                    disabled={!isAuth}
+                    title={!isAuth ? 'Login to like articles' : ''}
+                  >
+                    ♥ {article.favoritesCount}
+                  </button>
+                </div>
+
+                <Link to={`/articles/${article.slug}`} className="preview-link">
+                  <h1>{article.title}</h1>
+                  <p>{article.description}</p>
+                  <span>Read more...</span>
+                </Link>
+              </div>
+            ))}
+
+            <ul className="pagination">
+              {Array.from({ length: pages }).map((_, i) => (
+                <li
+                  key={i}
+                  className={page === i + 1 ? 'page-item active' : 'page-item'}
+                >
+                  <button
+                    className="page-link"
+                    onClick={() => setPage(i + 1)}
+                  >
+                    {i + 1}
+                  </button>
+                </li>
+              ))}
+            </ul>
+
           </div>
-        ))}
-
-        <ul className="pagination">
-          {Array.from({ length: pages }).map((_, i) => (
-            <li key={i} className={page === i + 1 ? 'page-item active' : 'page-item'}>
-              <button className="page-link" onClick={() => setPage(i + 1)}>
-                {i + 1}
-              </button>
-            </li>
-          ))}
-        </ul>
+        </div>
       </div>
     </div>
   );

@@ -19,12 +19,32 @@ export default function Profile() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <input {...register('username', { required: true })} />
-      <input {...register('email', { required: true })} />
-      <input {...register('password', { minLength: 6, maxLength: 40 })} />
-      <input {...register('image')} placeholder="Avatar URL" />
-      <button type="submit">Save</button>
-    </form>
+    <div className="profile-page">
+      <div className="user-info">
+        <div className="container">
+          <img
+            className="user-img"
+            src={user?.image || 'https://api.realworld.io/images/smiley-cyrus.jpeg'}
+            alt={user?.username}
+          />
+          <h1 className="user-name">{user?.username}</h1>
+        </div>
+      </div>
+
+      <div className="container page">
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <input {...register('username', { required: true })} placeholder="Username" />
+          <input {...register('email', { required: true })} placeholder="Email" />
+          <input
+            type="password"
+            {...register('password', { minLength: 6, maxLength: 40 })}
+            placeholder="New password"
+          />
+          <input {...register('image')} placeholder="Avatar URL" />
+
+          <button type="submit">Save</button>
+        </form>
+      </div>
+    </div>
   );
 }
