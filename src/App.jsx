@@ -5,9 +5,12 @@ import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
 import Profile from './pages/Profile';
 import { useAuth } from './context/AuthContext';
+import CreateArticle from './pages/CreateArticle';
+import EditArticle from './pages/EditArticle';
+import ArticleView from './pages/ArticleView';
 
 function App() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth(); // ← добавили logout
   const isAuth = !!user;
 
   return (
@@ -56,16 +59,44 @@ function App() {
             )}
 
             {isAuth && (
-              <li className="nav-item">
-                <NavLink
-                  className={({ isActive }) =>
-                    'nav-link' + (isActive ? ' active' : '')
-                  }
-                  to="/profile"
-                >
-                  Profile
-                </NavLink>
-              </li>
+              <>
+                <li className="nav-item">
+                  <NavLink
+                    className={({ isActive }) =>
+                      'nav-link' + (isActive ? ' active' : '')
+                    }
+                    to="/profile"
+                  >
+                    Profile
+                  </NavLink>
+                </li>
+
+                <li className="nav-item">
+                  <NavLink
+                    className={({ isActive }) =>
+                      'nav-link' + (isActive ? ' active' : '')
+                    }
+                    to="/new-article"
+                  >
+                    New Article
+                  </NavLink>
+                </li>
+
+                {/* ✅ Log out */}
+                <li className="nav-item">
+                  <button
+                    className="nav-link"
+                    onClick={logout}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Log out
+                  </button>
+                </li>
+              </>
             )}
           </ul>
         </div>
@@ -74,7 +105,15 @@ function App() {
       <Routes>
         <Route path="/" element={<ArticlesPage />} />
         <Route path="/articles" element={<ArticlesPage />} />
-        <Route path="/articles/:slug" element={<ArticlePage />} />
+        <Route path="/articles/:slug" element={<ArticleView />} />
+        <Route
+          path="/articles/:slug/edit"
+          element={isAuth ? <EditArticle /> : <Navigate to="/sign-in" />}
+        />
+        <Route
+          path="/new-article"
+          element={isAuth ? <CreateArticle /> : <Navigate to="/sign-in" />}
+        />
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/sign-up" element={<SignUp />} />
         {isAuth && <Route path="/profile" element={<Profile />} />}

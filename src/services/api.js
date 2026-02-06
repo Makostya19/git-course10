@@ -34,7 +34,13 @@ export async function registerUser(data) {
   const res = await fetch(`${API_URL}/users`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ user: { email: data.email, username: data.username, password: data.password } }),
+    body: JSON.stringify({
+      user: {
+        email: data.email,
+        username: data.username,
+        password: data.password,
+      },
+    }),
   });
 
   const json = await res.json();
@@ -46,7 +52,12 @@ export async function loginUser(data) {
   const res = await fetch(`${API_URL}/users/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ user: { email: data.email, password: data.password } }),
+    body: JSON.stringify({
+      user: {
+        email: data.email,
+        password: data.password,
+      },
+    }),
   });
 
   const json = await res.json();
@@ -55,7 +66,10 @@ export async function loginUser(data) {
 }
 
 export async function getCurrentUser() {
-  const res = await fetch(`${API_URL}/user`, { headers: { ...getAuthHeaders() } });
+  const res = await fetch(`${API_URL}/user`, {
+    headers: { ...getAuthHeaders() },
+  });
+
   if (!res.ok) throw new Error('Не авторизован');
   return res.json();
 }
@@ -63,7 +77,10 @@ export async function getCurrentUser() {
 export async function updateUser(data) {
   const res = await fetch(`${API_URL}/user`, {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+    headers: {
+      'Content-Type': 'application/json',
+      ...getAuthHeaders(),
+    },
     body: JSON.stringify({ user: data }),
   });
 
@@ -72,11 +89,61 @@ export async function updateUser(data) {
   return json;
 }
 
+/* =======================
+   ДОБАВЛЕНО ДЛЯ СТАТЕЙ
+   ======================= */
+
+export async function createArticle(data) {
+  const res = await fetch(`${API_URL}/articles`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...getAuthHeaders(),
+    },
+    body: JSON.stringify({ article: data }),
+  });
+
+  const json = await res.json();
+  if (!res.ok) throw json;
+  return json;
+}
+
+export async function updateArticle(slug, data) {
+  const res = await fetch(`${API_URL}/articles/${slug}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      ...getAuthHeaders(),
+    },
+    body: JSON.stringify({ article: data }),
+  });
+
+  const json = await res.json();
+  if (!res.ok) throw json;
+  return json;
+}
+
+export async function deleteArticle(slug) {
+  const res = await fetch(`${API_URL}/articles/${slug}`, {
+    method: 'DELETE',
+    headers: {
+      ...getAuthHeaders(),
+    },
+  });
+
+  if (!res.ok) {
+    throw new Error('Ошибка удаления статьи');
+  }
+}
+
 export default {
   getArticles,
   getArticle,
   register: registerUser,
   login: loginUser,
   getCurrentUser,
-  updateUser
+  updateUser,
+  createArticle,
+  updateArticle,
+  deleteArticle,
 };
