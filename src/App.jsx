@@ -1,16 +1,15 @@
 import { Routes, Route, Navigate, NavLink } from 'react-router-dom';
 import ArticlesPage from './pages/ArticlesPage';
-import ArticlePage from './pages/ArticlePage';
 import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
 import Profile from './pages/Profile';
-import { useAuth } from './context/AuthContext';
+import { useAuth } from "./context/useAuth";
 import CreateArticle from './pages/CreateArticle';
 import EditArticle from './pages/EditArticle';
 import ArticleView from './pages/ArticleView';
 
 function App() {
-  const { user, logout } = useAuth(); // ← добавили logout
+  const { user, logout } = useAuth(); 
   const isAuth = !!user;
 
   return (
@@ -82,7 +81,6 @@ function App() {
                   </NavLink>
                 </li>
 
-                {/* ✅ Log out */}
                 <li className="nav-item">
                   <button
                     className="nav-link"

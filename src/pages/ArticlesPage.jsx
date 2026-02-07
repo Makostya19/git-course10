@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getArticles } from '../services/api';
-import { useAuth } from '../context/AuthContext';
+import { getArticles, likeArticle, unlikeArticle } from '../services/api';
+import { useAuth } from '../context/useAuth';
 
 export default function ArticlesPage() {
   const { user } = useAuth();
@@ -13,7 +13,6 @@ export default function ArticlesPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setLoading(true);
     getArticles(page)
       .then((data) => {
         setArticles(data.articles);
@@ -23,6 +22,24 @@ export default function ArticlesPage() {
   }, [page]);
 
   const pages = Math.ceil(count / 10);
+
+  const handleLike = async (article) => {
+    if (!isAuth) return;
+
+    try {
+      const res = article.favorited
+        ? await unlikeArticle(article.slug)
+        : await likeArticle(article.slug);
+
+      setArticles((prev) =>
+        prev.map((a) =>
+          a.slug === article.slug ? res.article : a
+        )
+      );
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   return (
     <div className="home-page">
@@ -41,7 +58,10 @@ export default function ArticlesPage() {
 
             {articles.map((article) => (
               <div className="article-preview" key={article.slug}>
-                <div className="article-meta">
+                <div
+                  className="article-meta"
+                  style={{ display: 'flex', alignItems: 'center' }}   // ← добавлено
+                >
                   <div className="info">
                     <span className="author">{article.author.username}</span>
                     <span className="date">
@@ -49,13 +69,17 @@ export default function ArticlesPage() {
                     </span>
                   </div>
 
-                  <button
-                    className="btn btn-outline-primary btn-sm pull-xs-right"
-                    disabled={!isAuth}
-                    title={!isAuth ? 'Login to like articles' : ''}
-                  >
-                    ♥ {article.favoritesCount}
-                  </button>
+                  {/* ↓ добавлен wrapper */}
+                  <div style={{ marginLeft: 'auto' }}>
+                    <button
+                      className="btn btn-outline-primary btn-sm pull-xs-right"
+                      disabled={!isAuth}
+                      title={!isAuth ? 'Login to like articles' : ''}
+                      onClick={() => handleLike(article)}
+                    >
+                      {article.favorited ? '♥' : '♡'} {article.favoritesCount}
+                    </button>
+                  </div>
                 </div>
 
                 <Link to={`/articles/${article.slug}`} className="preview-link">

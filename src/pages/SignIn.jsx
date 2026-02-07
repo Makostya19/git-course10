@@ -1,8 +1,8 @@
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/useAuth';
 import api from '../services/api';
-import '../index.css'; 
+import '../index.css';
 
 export default function SignIn() {
   const { register, handleSubmit, setError } = useForm();
@@ -14,7 +14,7 @@ export default function SignIn() {
       const res = await api.login(data.email, data.password);
       login(res.user);
       navigate('/');
-    } catch (e) {
+    } catch {
       setError('email', { message: 'Invalid email or password' });
     }
   };

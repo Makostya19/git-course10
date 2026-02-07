@@ -1,17 +1,16 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/useAuth';
 import ReactMarkdown from 'react-markdown';
 import api from '../services/api';
-import ConfirmModal from '../components/ConfirmModal'; 
+import ConfirmModal from '../components/ConfirmModal';
 
 export default function ArticleView() {
   const { slug } = useParams();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [article, setArticle] = useState(null);
-
-  const [showModal, setShowModal] = useState(false); 
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     async function fetchArticle() {
@@ -34,6 +33,20 @@ export default function ArticleView() {
     }
   };
 
+  const handleLike = async () => {
+    if (!user) return;
+
+    try {
+      const res = article.favorited
+        ? await api.unlikeArticle(article.slug)
+        : await api.likeArticle(article.slug);
+
+      setArticle(res.article);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   if (!article) return <p>Loading...</p>;
 
   const isAuthor = user && user.username === article.author.username;
@@ -51,6 +64,14 @@ export default function ArticleView() {
                 {new Date(article.createdAt).toDateString()}
               </span>
             </div>
+
+            <button
+              className="btn btn-outline-primary btn-sm"
+              disabled={!user}
+              onClick={handleLike}
+            >
+              {article.favorited ? '♥' : '♡'} {article.favoritesCount}
+            </button>
 
             {isAuthor && (
               <span>

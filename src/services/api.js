@@ -89,10 +89,6 @@ export async function updateUser(data) {
   return json;
 }
 
-/* =======================
-   ДОБАВЛЕНО ДЛЯ СТАТЕЙ
-   ======================= */
-
 export async function createArticle(data) {
   const res = await fetch(`${API_URL}/articles`, {
     method: 'POST',
@@ -136,6 +132,30 @@ export async function deleteArticle(slug) {
   }
 }
 
+export async function likeArticle(slug) {
+  const res = await fetch(`${API_URL}/articles/${slug}/favorite`, {
+    method: 'POST',
+    headers: {
+      ...getAuthHeaders(),
+    },
+  });
+
+  if (!res.ok) throw new Error('Ошибка лайка');
+  return res.json();
+}
+
+export async function unlikeArticle(slug) {
+  const res = await fetch(`${API_URL}/articles/${slug}/favorite`, {
+    method: 'DELETE',
+    headers: {
+      ...getAuthHeaders(),
+    },
+  });
+
+  if (!res.ok) throw new Error('Ошибка анлайка');
+  return res.json();
+}
+
 export default {
   getArticles,
   getArticle,
@@ -146,4 +166,6 @@ export default {
   createArticle,
   updateArticle,
   deleteArticle,
+  likeArticle,
+  unlikeArticle,
 };
