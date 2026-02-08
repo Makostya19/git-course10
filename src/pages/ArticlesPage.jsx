@@ -60,7 +60,7 @@ export default function ArticlesPage() {
               <div className="article-preview" key={article.slug}>
                 <div
                   className="article-meta"
-                  style={{ display: 'flex', alignItems: 'center' }}   // ← добавлено
+                  style={{ display: 'flex', alignItems: 'center' }}   
                 >
                   <div className="info">
                     <span className="author">{article.author.username}</span>
@@ -69,7 +69,6 @@ export default function ArticlesPage() {
                     </span>
                   </div>
 
-                  {/* ↓ добавлен wrapper */}
                   <div style={{ marginLeft: 'auto' }}>
                     <button
                       className="btn btn-outline-primary btn-sm pull-xs-right"
