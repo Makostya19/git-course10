@@ -1,58 +1,29 @@
-RealWorld Blog Platform
+# Realworld Blog Platform
 
-A simple blog platform built with React using the RealWorld API.
-The application supports authentication, article management, likes, and deployment.
+Простой блог на React с аутентификацией, CRUD для статей и лайками. Проект использует React Hooks, React Router, React Hook Form и Vite.
 
-🔗 Live Demo
+## 🔗 Демо
 
-👉 https://makostya19.github.io/git-course10/
+[Live Demo на GitHub Pages](https://makostya19.github.io/git-course10/)
 
-🛠 Tech Stack
+## 🛠 Функционал
 
-React
-Vite
-React Router v6
-React Hook Form
-ESLint + Prettier
-Husky
-RealWorld API
+- Просмотр списка статей с пагинацией (серверная пагинация)
+- Просмотр полной статьи с рендерингом Markdown
+- Лайки статей (только для авторизованных пользователей)
+- Регистрация, логин и редактирование профиля
+- Создание, редактирование и удаление статьи (только для автора)
+- Авторизация через контекст (`useAuth`)
+- Валидация форм через `react-hook-form`
+- Защита приватных маршрутов
+- Линтинг кода через ESLint и Prettier
+- Деплой на GitHub Pages
 
-✨ Features
+## ⚡ Запуск локально
 
-User registration and login
+1. Клонируйте репозиторий:
 
-Persistent authentication
-
-View list of articles with pagination
-
-View single article with Markdown rendering
-
-Create, edit, and delete articles (authorized users)
-
-Like / unlike articles
-
-Profile editing
-
-Client-side validation with server error handling
-
-📦 Installation & Local Run
-npm install
-npm run dev
-
-The app will be available at http://localhost:5173
-
-🔐 API
-
-API used: https://realworld.habsida.net/api
-
-If you encounter a 429 Too Many Requests error, wait about one minute and retry.
-
-🧹 Code Quality
-
-ESLint and Prettier configured
-
-Husky runs checks on git push
-
-🚀 Deployment
-
-The project is deployed on Vercel.
+```bash
+git clone https://github.com/makostya19/git-course10.git
+cd git-course10
+```
