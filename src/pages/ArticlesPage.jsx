@@ -11,13 +11,16 @@ export default function ArticlesPage() {
   const [page, setPage] = useState(1);
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     getArticles(page)
       .then((data) => {
         setArticles(data.articles);
         setCount(data.articlesCount);
+        setError(null);
       })
+      .catch(err => setError(err.message || 'Ошибка загрузки статей'))
       .finally(() => setLoading(false));
   }, [page]);
 
@@ -31,37 +34,121 @@ export default function ArticlesPage() {
         ? await unlikeArticle(article.slug)
         : await likeArticle(article.slug);
 
-      setArticles((prev) =>
-        prev.map((a) =>
-          a.slug === article.slug ? res.article : a
-        )
+      setArticles(prev =>
+        prev.map(a => a.slug === article.slug ? res.article : a)
       );
     } catch (e) {
       console.error(e);
+      setError('Ошибка при лайке статьи'); // показать на странице
     }
   };
 
   return (
     <div className="home-page">
-      <div className="banner">
-        <div className="container">
-          <h1 className="logo-font">Realworld Blog</h1>
-          <p>A place to share your knowledge.</p>
+      {/* Баннер с логотипом белым текстом */}
+      <div className="banner" style={{ backgroundColor: '#3ea55f' }}>
+        <div
+          className="container"
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            textAlign: 'center',
+            padding: '2rem 0'
+          }}
+        >
+          <h1
+            className="logo-font"
+            style={{
+              color: '#FFFFFF', // текст белый
+              display: 'inline-block',
+              marginBottom: '0.5rem'
+            }}
+          >
+            Realworld Blog
+          </h1>
+          <p style={{ margin: 0, color: '#FFFFFF' }}>A place to share your knowledge.</p>
+        </div>
+      </div>
+
+      {/* Популярные теги отдельной ячейкой под баннером, слева */}
+      <div
+        className="container"
+        style={{
+          marginTop: '1rem',
+          padding: '1rem',
+          border: '1px solid #eee',
+          borderRadius: '8px',
+          backgroundColor: '#f9f9f9',
+          textAlign: 'left'
+        }}
+      >
+        <h5 style={{ marginBottom: '0.5rem', fontSize: '0.9rem', color: '#555' }}>
+          Popular Tags
+        </h5>
+        <div
+          className="tags"
+          style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}
+        >
+          <span
+            className="tag"
+            style={{
+              backgroundColor: '#ddd',
+              padding: '0.25rem 0.5rem',
+              borderRadius: '12px'
+            }}
+          >
+            react
+          </span>
+          <span
+            className="tag"
+            style={{
+              backgroundColor: '#ddd',
+              padding: '0.25rem 0.5rem',
+              borderRadius: '12px'
+            }}
+          >
+            javascript
+          </span>
+          <span
+            className="tag"
+            style={{
+              backgroundColor: '#ddd',
+              padding: '0.25rem 0.5rem',
+              borderRadius: '12px'
+            }}
+          >
+            web
+          </span>
         </div>
       </div>
 
       <div className="container page">
+        {error && <p style={{ color: 'red' }}>{error}</p>} {/* отображение ошибок */}
         <div className="row">
           <div className="col-md-9">
-
             {loading && <p>Loading...</p>}
 
             {articles.map((article) => (
-              <div className="article-preview" key={article.slug}>
+              <div
+                className="article-preview"
+                key={article.slug}
+                style={{ marginBottom: '1.5rem' }}
+              >
                 <div
                   className="article-meta"
-                  style={{ display: 'flex', alignItems: 'center' }}   
+                  style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
                 >
+                  {/* Аватар */}
+                  {article.author.image && (
+                    <img
+                      src={article.author.image}
+                      alt={article.author.username}
+                      width="32"
+                      style={{ borderRadius: '50%' }}
+                    />
+                  )}
                   <div className="info">
                     <span className="author">{article.author.username}</span>
                     <span className="date">
@@ -71,7 +158,7 @@ export default function ArticlesPage() {
 
                   <div style={{ marginLeft: 'auto' }}>
                     <button
-                      className="btn btn-outline-primary btn-sm pull-xs-right"
+                      className="btn btn-outline-primary btn-sm"
                       disabled={!isAuth}
                       title={!isAuth ? 'Login to like articles' : ''}
                       onClick={() => handleLike(article)}
@@ -86,6 +173,36 @@ export default function ArticlesPage() {
                   <p>{article.description}</p>
                   <span>Read more...</span>
                 </Link>
+
+                {/* Теги статьи */}
+                {article.tagList && article.tagList.length > 0 && (
+                  <div
+                    className="tags"
+                    style={{
+                      display: 'flex',
+                      gap: '0.5rem',
+                      flexWrap: 'wrap',
+                      marginTop: '0.5rem',
+                      justifyContent: 'flex-start'
+                    }}
+                  >
+                    {article.tagList.map((tag) => (
+                      <span
+                        key={tag}
+                        className="tag"
+                        style={{
+                          backgroundColor: '#ddd',
+                          color: '#555',
+                          fontSize: '0.85rem',
+                          padding: '0.25rem 0.5rem',
+                          borderRadius: '12px'
+                        }}
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
             ))}
 
@@ -95,16 +212,12 @@ export default function ArticlesPage() {
                   key={i}
                   className={page === i + 1 ? 'page-item active' : 'page-item'}
                 >
-                  <button
-                    className="page-link"
-                    onClick={() => setPage(i + 1)}
-                  >
+                  <button className="page-link" onClick={() => setPage(i + 1)}>
                     {i + 1}
                   </button>
                 </li>
               ))}
             </ul>
-
           </div>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/useAuth';
 import '../index.css';
 
 export default function Header() {
@@ -14,10 +14,10 @@ export default function Header() {
           {user ? (
             <>
               <Link to="/profile" className="profile-link">
-                <img src={user.image} alt="" width="32" />
+                {user.image && <img src={user.image} alt="" width="32" style={{borderRadius: '50%'}} />}
                 {user.username}
               </Link>
-              <button onClick={logout}>Log out</button>
+              <button className="logout" onClick={logout}>Log out</button>
             </>
           ) : (
             <>

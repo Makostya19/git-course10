@@ -11,14 +11,16 @@ export default function ArticleView() {
   const navigate = useNavigate();
   const [article, setArticle] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     async function fetchArticle() {
       try {
         const res = await api.getArticle(slug);
         setArticle(res.article);
+        setError(null);
       } catch (e) {
-        console.error(e);
+        setError(e.message);
       }
     }
     fetchArticle();
@@ -29,21 +31,20 @@ export default function ArticleView() {
       await api.deleteArticle(slug);
       navigate('/articles');
     } catch (e) {
-      console.error(e);
+      setError(e.message); // показать на странице
     }
   };
 
   const handleLike = async () => {
     if (!user) return;
-
     try {
       const res = article.favorited
         ? await api.unlikeArticle(article.slug)
         : await api.likeArticle(article.slug);
-
       setArticle(res.article);
+      setError(null);
     } catch (e) {
-      console.error(e);
+      setError(e.message); // показать на странице
     }
   };
 
@@ -57,31 +58,38 @@ export default function ArticleView() {
         <div className="container">
           <h1>{article.title}</h1>
 
-          <div className="article-meta">
+          {error && <p style={{ color: 'red' }}>{error}</p>} {/* ошибки */}
+
+          <div className="article-meta" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            {/* Аватар автора */}
+            <img
+              src={article.author.image || 'https://api.realworld.io/images/smiley-cyrus.jpeg'}
+              alt={article.author.username}
+              width="32"
+              style={{ borderRadius: '50%' }}
+            />
             <div className="info">
               <span className="author">{article.author.username}</span>
-              <span className="date">
-                {new Date(article.createdAt).toDateString()}
-              </span>
+              <span className="date">{new Date(article.createdAt).toDateString()}</span>
             </div>
 
             <button
               className="btn btn-outline-primary btn-sm"
               disabled={!user}
               onClick={handleLike}
+              style={{ marginLeft: 'auto' }}
             >
               {article.favorited ? '♥' : '♡'} {article.favoritesCount}
             </button>
 
             {isAuthor && (
-              <span>
+              <span style={{ display: 'flex', gap: '0.5rem' }}>
                 <Link
                   to={`/articles/${slug}/edit`}
                   className="btn btn-outline-secondary btn-sm"
                 >
                   ✎ Edit Article
                 </Link>
-
                 <button
                   className="btn btn-outline-danger btn-sm"
                   onClick={() => setShowModal(true)}
@@ -91,6 +99,27 @@ export default function ArticleView() {
               </span>
             )}
           </div>
+
+          {/* Article tags */}
+          {article.tagList && article.tagList.length > 0 && (
+            <div className="tags" style={{ marginTop: '1rem', display: 'flex', flexWrap: 'wrap', gap: '0.5rem', justifyContent: 'flex-start' }}>
+              {article.tagList.map(tag => (
+                <span
+                  key={tag}
+                  className="tag"
+                  style={{
+                    backgroundColor: '#ddd',
+                    color: '#555',
+                    fontSize: '0.85rem',
+                    padding: '0.25rem 0.5rem',
+                    borderRadius: '12px'
+                  }}
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 

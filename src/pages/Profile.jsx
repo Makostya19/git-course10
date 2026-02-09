@@ -1,9 +1,11 @@
 import { useForm } from 'react-hook-form';
 import api from '../services/api';
 import { useAuth } from '../context/useAuth';
+import { useState } from 'react';
 
 export default function Profile() {
   const { user, login } = useAuth();
+  const [serverError, setServerError] = useState('');
 
   const { register, handleSubmit } = useForm({
     defaultValues: {
@@ -14,8 +16,13 @@ export default function Profile() {
   });
 
   const onSubmit = async (data) => {
-    const res = await api.updateUser(data);
-    login(res.user);
+    try {
+      const res = await api.updateUser(data);
+      login(res.user);
+      setServerError('');
+    } catch (e) {
+      setServerError(e?.errors ? JSON.stringify(e.errors) : e.message);
+    }
   };
 
   return (
@@ -32,6 +39,7 @@ export default function Profile() {
       </div>
 
       <div className="container page">
+        {serverError && <p style={{ color: 'red' }}>{serverError}</p>}
         <form onSubmit={handleSubmit(onSubmit)}>
           <input {...register('username', { required: true })} placeholder="Username" />
           <input {...register('email', { required: true })} placeholder="Email" />
