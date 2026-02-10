@@ -5,7 +5,7 @@ import { useAuth } from '../context/useAuth';
 import '../index.css';
 
 export default function SignUp() {
-  const { register, handleSubmit, setError, watch } = useForm();
+  const { register, handleSubmit, setError, watch, formState: { errors } } = useForm();
   const navigate = useNavigate();
   const { login } = useAuth();
 
@@ -16,7 +16,6 @@ export default function SignUp() {
         email: data.email,
         password: data.password,
       });
-
       login(res.user);
       navigate('/');
     } catch (e) {
@@ -33,44 +32,31 @@ export default function SignUp() {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <h1>SIGN UP</h1>
-
       <input
         placeholder="Username"
-        {...register('username', {
-          required: true,
-          minLength: 3,
-          maxLength: 20,
-        })}
+        {...register('username', { required: true, minLength: 3, maxLength: 20 })}
       />
-
-      <input
-        placeholder="Email"
-        {...register('email', { required: true })}
-      />
-
+      {errors.username && <p style={{ color: 'red' }}>{errors.username.message}</p>}
+      <input placeholder="Email" {...register('email', { required: true })} />
+      {errors.email && <p style={{ color: 'red' }}>{errors.email.message}</p>}
       <input
         type="password"
         placeholder="Password"
-        {...register('password', {
-          required: true,
-          minLength: 6,
-          maxLength: 40,
-        })}
+        {...register('password', { required: true, minLength: 6, maxLength: 40 })}
       />
-
+      {errors.password && <p style={{ color: 'red' }}>{errors.password.message}</p>}
       <input
         type="password"
         placeholder="Repeat password"
         {...register('repeatPassword', {
-          validate: (v) => v === watch('password'),
+          validate: (v) => v === watch('password') || 'Passwords must match',
         })}
       />
-
+      {errors.repeatPassword && <p style={{ color: 'red' }}>{errors.repeatPassword.message}</p>}
       <label>
-        <input type="checkbox" {...register('agree', { required: true })} />
-        I agree
+        <input type="checkbox" {...register('agree', { required: 'You must agree' })} /> I agree
       </label>
-
+      {errors.agree && <p style={{ color: 'red' }}>{errors.agree.message}</p>}
       <button type="submit">Sign up</button>
     </form>
   );

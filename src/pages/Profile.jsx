@@ -1,13 +1,10 @@
 import { useForm } from 'react-hook-form';
 import api from '../services/api';
 import { useAuth } from '../context/useAuth';
-import { useState } from 'react';
 
 export default function Profile() {
   const { user, login } = useAuth();
-  const [serverError, setServerError] = useState('');
-
-  const { register, handleSubmit } = useForm({
+  const { register, handleSubmit, setError, formState: { errors } } = useForm({
     defaultValues: {
       username: user?.username || '',
       email: user?.email || '',
@@ -19,9 +16,14 @@ export default function Profile() {
     try {
       const res = await api.updateUser(data);
       login(res.user);
-      setServerError('');
     } catch (e) {
-      setServerError(e?.errors ? JSON.stringify(e.errors) : e.message);
+      if (e?.errors) {
+        Object.entries(e.errors).forEach(([field, messages]) => {
+          setError(field, { message: messages[0] });
+        });
+      } else {
+        console.error('Update user error:', e);
+      }
     }
   };
 
@@ -29,27 +31,20 @@ export default function Profile() {
     <div className="profile-page">
       <div className="user-info">
         <div className="container">
-          <img
-            className="user-img"
-            src={user?.image || 'https://api.realworld.io/images/smiley-cyrus.jpeg'}
-            alt={user?.username}
-          />
+          <img className="user-img" src={user?.image || 'https://api.realworld.io/images/smiley-cyrus.jpeg'} alt={user?.username} />
           <h1 className="user-name">{user?.username}</h1>
         </div>
       </div>
-
       <div className="container page">
-        {serverError && <p style={{ color: 'red' }}>{serverError}</p>}
         <form onSubmit={handleSubmit(onSubmit)}>
-          <input {...register('username', { required: true })} placeholder="Username" />
-          <input {...register('email', { required: true })} placeholder="Email" />
-          <input
-            type="password"
-            {...register('password', { minLength: 6, maxLength: 40 })}
-            placeholder="New password"
-          />
+          <input {...register('username', { required: 'Username is required' })} placeholder="Username" />
+          {errors.username && <p style={{ color: 'red' }}>{errors.username.message}</p>}
+          <input {...register('email', { required: 'Email is required' })} placeholder="Email" />
+          {errors.email && <p style={{ color: 'red' }}>{errors.email.message}</p>}
+          <input type="password" {...register('password', { minLength: { value: 6, message: 'Password must be at least 6 chars' }, maxLength: { value: 40, message: 'Password max 40 chars' } })} placeholder="New password" />
+          {errors.password && <p style={{ color: 'red' }}>{errors.password.message}</p>}
           <input {...register('image')} placeholder="Avatar URL" />
-
+          {errors.image && <p style={{ color: 'red' }}>{errors.image.message}</p>}
           <button type="submit">Save</button>
         </form>
       </div>

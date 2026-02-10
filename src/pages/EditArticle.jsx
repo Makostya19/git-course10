@@ -9,6 +9,7 @@ export default function EditArticle() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [article, setArticle] = useState(null);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     async function fetchArticle() {
@@ -19,7 +20,6 @@ export default function EditArticle() {
         console.error(e);
       }
     }
-
     if (user) {
       fetchArticle();
     }
@@ -32,7 +32,11 @@ export default function EditArticle() {
       const res = await api.updateArticle(slug, data);
       navigate(`/articles/${res.article.slug}`);
     } catch (e) {
-      console.error(e);
+      if (e?.errors) {
+        setError(Object.values(e.errors).flat()[0]);
+      } else {
+        setError('Error updating article');
+      }
     }
   };
 
@@ -40,6 +44,7 @@ export default function EditArticle() {
 
   return (
     <div>
+      {error && <p style={{ color: 'red' }}>{error}</p>}
       <FormArticle initialValues={article} onSubmit={handleUpdate} />
     </div>
   );
