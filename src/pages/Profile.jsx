@@ -1,6 +1,7 @@
 import { useForm } from 'react-hook-form';
 import api from '../services/api';
 import { useAuth } from '../context/useAuth';
+import DefaultAvatar from './DefaultAvatar';
 
 export default function Profile() {
   const { user, login } = useAuth();
@@ -31,7 +32,11 @@ export default function Profile() {
     <div className="profile-page">
       <div className="user-info">
         <div className="container">
-          <img className="user-img" src={user?.image || 'https://api.realworld.io/images/smiley-cyrus.jpeg'} alt={user?.username} />
+          {user?.image ? (
+            <img className="user-img" src={user.image} alt={user.username} />
+          ) : (
+            <DefaultAvatar width={64} height={64} />
+          )}
           <h1 className="user-name">{user?.username}</h1>
         </div>
       </div>
