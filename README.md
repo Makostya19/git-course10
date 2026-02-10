@@ -1,29 +1,20 @@
-# Realworld Blog Platform
+# Blog Platform
 
-Простой блог на React с аутентификацией, CRUD для статей и лайками. Проект использует React Hooks, React Router, React Hook Form и Vite.
+Учебный React-проект (Vite + React Router).
 
-## 🔗 Демо
+## Демо
 
-[Live Demo на GitHub Pages](https://makostya19.github.io/git-course10/)
+[git-course10.vercel.app](https://git-course10.vercel.app)
 
-## 🛠 Функционал
+## Стек
 
-- Просмотр списка статей с пагинацией (серверная пагинация)
-- Просмотр полной статьи с рендерингом Markdown
-- Лайки статей (только для авторизованных пользователей)
-- Регистрация, логин и редактирование профиля
-- Создание, редактирование и удаление статьи (только для автора)
-- Авторизация через контекст (`useAuth`)
-- Валидация форм через `react-hook-form`
-- Защита приватных маршрутов
-- Линтинг кода через ESLint и Prettier
-- Деплой на GitHub Pages
+React, Vite, React Router, Axios
 
-## ⚡ Запуск локально
+## Запуск локально
 
-1. Клонируйте репозиторий:
+npm install  
+npm run dev
 
-```bash
-git clone https://github.com/makostya19/git-course10.git
-cd git-course10
-```
+## Деплой
+
+Проект задеплоен на Vercel.
