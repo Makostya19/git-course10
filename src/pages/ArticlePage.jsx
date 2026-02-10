@@ -1,8 +1,9 @@
-import { useParams } from 'react-router-dom';
 import { useEffect, useState, useContext } from 'react';
-import { getArticle } from '../services/api';
+import { useParams } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import { AuthContext } from '../context/AuthContext';
+import { getArticle } from '../services/api';
+import DefaultAvatar from './DefaultAvatar';
 
 export default function ArticlePage() {
   const { slug } = useParams();
@@ -21,8 +22,11 @@ export default function ArticlePage() {
   }, [slug]);
 
   if (loading) return <p>Loading...</p>;
-  if (error) return <p style={{color: 'red'}}>{error}</p>;
+  if (error) return <p style={{ color: 'red' }}>{error}</p>;
   if (!article) return <p>Article not found</p>;
+
+  const hasAvatar =
+    article.author.image && article.author.image.trim() !== '';
 
   return (
     <div className="article-page">
@@ -30,23 +34,42 @@ export default function ArticlePage() {
         <div className="container">
           <h1>{article.title}</h1>
 
-          <div className="article-meta">
-            {article.author.image && <img src={article.author.image} alt="" width="32" style={{borderRadius: '50%'}} />}
+          <div
+            className="article-meta"
+            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+          >
+            {hasAvatar ? (
+              <img
+                src={article.author.image}
+                alt={article.author.username}
+                width="32"
+                height="32"
+                style={{ borderRadius: '50%' }}
+              />
+            ) : (
+              <DefaultAvatar width={32} height={32} />
+            )}
+
             <div className="info">
               <span className="author">{article.author.username}</span>
-              <span className="date">{new Date(article.createdAt).toDateString()}</span>
+              <span className="date">
+                {new Date(article.createdAt).toDateString()}
+              </span>
             </div>
 
             <button
               disabled={!isAuth}
               title={!isAuth ? 'Login to like articles' : ''}
-              style={{ cursor: isAuth ? 'pointer' : 'not-allowed', opacity: isAuth ? 1 : 0.5 }}
+              style={{
+                marginLeft: 'auto',
+                cursor: isAuth ? 'pointer' : 'not-allowed',
+                opacity: isAuth ? 1 : 0.5
+              }}
             >
               ❤️ {article.favoritesCount}
             </button>
           </div>
 
-          {/* Popular tags container */}
           {article.tagList && article.tagList.length > 0 && (
             <div className="tags">
               {article.tagList.map(tag => (
