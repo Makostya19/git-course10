@@ -11,11 +11,9 @@ if (redirect) {
   window.history.replaceState(null, null, redirect);
 }
 
-const isDev = import.meta.env.DEV;
-
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <BrowserRouter basename={isDev ? '/' : '/git-course10/'}>
+    <BrowserRouter>
       <AuthProvider>
         <App />
       </AuthProvider>
