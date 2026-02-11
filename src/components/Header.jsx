@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/useAuth';
-import DefaultAvatar from './DefaultAvatar';
+import DefaultAvatar from '../pages/DefaultAvatar';
 import '../index.css';
 
 export default function Header() {

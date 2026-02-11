@@ -289,3 +289,16 @@ body {
   padding: 0.25rem 0.5rem;
   border-radius: 12px;
 }
+
+.popular-tags {
+  margin-top: 1rem;
+  padding: 0.5rem 0;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+}
+
+.popular-tags h5 {
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  color: #555;
+}
