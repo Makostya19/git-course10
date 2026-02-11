@@ -15,6 +15,10 @@ export default function ArticlePage() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    setArticle(null);
+    setLoading(true);
+    setError(null);
+
     getArticle(slug)
       .then(data => setArticle(data.article))
       .catch(err => setError(err.message || 'Error loading article'))
@@ -25,8 +29,11 @@ export default function ArticlePage() {
   if (error) return <p style={{ color: 'red' }}>{error}</p>;
   if (!article) return <p>Article not found</p>;
 
-  const hasAvatar =
-    article.author.image && article.author.image.trim() !== '';
+  // Проверка как в ArticlesPage.jsx
+  const showDefaultAvatar =
+    !article.author.image ||
+    article.author.image.trim() === '' ||
+    article.author.image.includes('smiley-cyrus.jpeg');
 
   return (
     <div className="article-page">
@@ -34,11 +41,10 @@ export default function ArticlePage() {
         <div className="container">
           <h1>{article.title}</h1>
 
-          <div
-            className="article-meta"
-            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
-          >
-            {hasAvatar ? (
+          <div className="article-meta" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            {showDefaultAvatar ? (
+              <DefaultAvatar width={32} height={32} />
+            ) : (
               <img
                 src={article.author.image}
                 alt={article.author.username}
@@ -46,15 +52,11 @@ export default function ArticlePage() {
                 height="32"
                 style={{ borderRadius: '50%' }}
               />
-            ) : (
-              <DefaultAvatar width={32} height={32} />
             )}
 
             <div className="info">
               <span className="author">{article.author.username}</span>
-              <span className="date">
-                {new Date(article.createdAt).toDateString()}
-              </span>
+              <span className="date">{new Date(article.createdAt).toDateString()}</span>
             </div>
 
             <button
