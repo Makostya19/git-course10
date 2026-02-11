@@ -40,9 +40,15 @@ export default function ArticlePage() {
               <img
                 src={article.author.image}
                 alt={article.author.username}
-                width="32"
-                height="32"
+                width={32}
+                height={32}
                 style={{ borderRadius: '50%' }}
+                onError={(e) => {
+                  e.target.onerror = null; // чтобы не зациклить
+                  e.target.style.display = 'none';
+                  // отображаем DefaultAvatar вместо сломанного изображения
+                  e.target.insertAdjacentHTML('afterend', '<svg width="32" height="32"><circle cx="16" cy="16" r="16" fill="#555"/></svg>');
+                }}
               />
             ) : (
               <DefaultAvatar width={32} height={32} />
