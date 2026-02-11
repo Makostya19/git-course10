@@ -29,12 +29,6 @@ export default function ArticlePage() {
   if (error) return <p style={{ color: 'red' }}>{error}</p>;
   if (!article) return <p>Article not found</p>;
 
-  // Проверка как в ArticlesPage.jsx
-  const showDefaultAvatar =
-    !article.author.image ||
-    article.author.image.trim() === '' ||
-    article.author.image.includes('smiley-cyrus.jpeg');
-
   return (
     <div className="article-page">
       <div className="banner">
@@ -42,9 +36,7 @@ export default function ArticlePage() {
           <h1>{article.title}</h1>
 
           <div className="article-meta" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            {showDefaultAvatar ? (
-              <DefaultAvatar width={32} height={32} />
-            ) : (
+            {article.author.image ? (
               <img
                 src={article.author.image}
                 alt={article.author.username}
@@ -52,6 +44,8 @@ export default function ArticlePage() {
                 height="32"
                 style={{ borderRadius: '50%' }}
               />
+            ) : (
+              <DefaultAvatar width={32} height={32} />
             )}
 
             <div className="info">
