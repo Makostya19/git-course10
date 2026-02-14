@@ -21,8 +21,11 @@ export default function Profile() {
 
   const onSubmit = async (data) => {
     try {
-      const res = await api.updateUser(data);
+      // Оборачиваем в user
+      const res = await api.updateUser({ user: data });
+
       login(res.user);
+      localStorage.setItem('token', res.user.token);
     } catch (e) {
       if (e?.errors) {
         Object.entries(e.errors).forEach(([field, messages]) => {
@@ -45,7 +48,7 @@ export default function Profile() {
               alt={user.username}
             />
           ) : (
-            <DefaultAvatar size={64} />
+            <DefaultAvatar width={64} height={64} />
           )}
 
           <h1 className="user-name">{user?.username}</h1>

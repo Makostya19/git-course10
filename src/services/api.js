@@ -8,25 +8,22 @@ function getAuthHeaders() {
 export async function getArticles(page = 1) {
   const limit = 10;
   const offset = (page - 1) * limit;
+  const res = await fetch(`${API_URL}/articles?limit=${limit}&offset=${offset}`);
+  if (!res.ok) throw new Error('Ошибка загрузки статей');
+  return res.json();
+}
 
-  const res = await fetch(
-    `${API_URL}/articles?limit=${limit}&offset=${offset}`
-  );
-
-  if (!res.ok) {
-    throw new Error('Ошибка загрузки статей');
-  }
-
+export async function getArticlesByTag(tag, page = 1) {
+  const limit = 10;
+  const offset = (page - 1) * limit;
+  const res = await fetch(`${API_URL}/articles?tag=${tag}&limit=${limit}&offset=${offset}`);
+  if (!res.ok) throw new Error('Ошибка загрузки статей по тегу');
   return res.json();
 }
 
 export async function getArticle(slug) {
   const res = await fetch(`${API_URL}/articles/${slug}`);
-
-  if (!res.ok) {
-    throw new Error('Ошибка загрузки статьи');
-  }
-
+  if (!res.ok) throw new Error('Ошибка загрузки статьи');
   return res.json();
 }
 
@@ -34,15 +31,8 @@ export async function registerUser(data) {
   const res = await fetch(`${API_URL}/users`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      user: {
-        email: data.email,
-        username: data.username,
-        password: data.password,
-      },
-    }),
+    body: JSON.stringify({ user: { email: data.email, username: data.username, password: data.password } }),
   });
-
   const json = await res.json();
   if (!res.ok) throw json;
   return json;
@@ -52,24 +42,15 @@ export async function loginUser(data) {
   const res = await fetch(`${API_URL}/users/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      user: {
-        email: data.email,
-        password: data.password,
-      },
-    }),
+    body: JSON.stringify({ user: { email: data.email, password: data.password } }),
   });
-
   const json = await res.json();
   if (!res.ok) throw json;
   return json;
 }
 
 export async function getCurrentUser() {
-  const res = await fetch(`${API_URL}/user`, {
-    headers: { ...getAuthHeaders() },
-  });
-
+  const res = await fetch(`${API_URL}/user`, { headers: { ...getAuthHeaders() } });
   if (!res.ok) throw new Error('Не авторизован');
   return res.json();
 }
@@ -77,13 +58,9 @@ export async function getCurrentUser() {
 export async function updateUser(data) {
   const res = await fetch(`${API_URL}/user`, {
     method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      ...getAuthHeaders(),
-    },
+    headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
     body: JSON.stringify({ user: data }),
   });
-
   const json = await res.json();
   if (!res.ok) throw json;
   return json;
@@ -92,13 +69,9 @@ export async function updateUser(data) {
 export async function createArticle(data) {
   const res = await fetch(`${API_URL}/articles`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      ...getAuthHeaders(),
-    },
+    headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
     body: JSON.stringify({ article: data }),
   });
-
   const json = await res.json();
   if (!res.ok) throw json;
   return json;
@@ -107,13 +80,9 @@ export async function createArticle(data) {
 export async function updateArticle(slug, data) {
   const res = await fetch(`${API_URL}/articles/${slug}`, {
     method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      ...getAuthHeaders(),
-    },
+    headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
     body: JSON.stringify({ article: data }),
   });
-
   const json = await res.json();
   if (!res.ok) throw json;
   return json;
@@ -122,42 +91,33 @@ export async function updateArticle(slug, data) {
 export async function deleteArticle(slug) {
   const res = await fetch(`${API_URL}/articles/${slug}`, {
     method: 'DELETE',
-    headers: {
-      ...getAuthHeaders(),
-    },
+    headers: { ...getAuthHeaders() },
   });
-
-  if (!res.ok) {
-    throw new Error('Ошибка удаления статьи');
-  }
+  if (!res.ok) throw new Error('Ошибка удаления статьи');
 }
 
 export async function likeArticle(slug) {
-  const res = await fetch(`${API_URL}/articles/${slug}/favorite`, {
-    method: 'POST',
-    headers: {
-      ...getAuthHeaders(),
-    },
-  });
-
+  const res = await fetch(`${API_URL}/articles/${slug}/favorite`, { method: 'POST', headers: { ...getAuthHeaders() } });
   if (!res.ok) throw new Error('Ошибка лайка');
   return res.json();
 }
 
 export async function unlikeArticle(slug) {
-  const res = await fetch(`${API_URL}/articles/${slug}/favorite`, {
-    method: 'DELETE',
-    headers: {
-      ...getAuthHeaders(),
-    },
-  });
-
+  const res = await fetch(`${API_URL}/articles/${slug}/favorite`, { method: 'DELETE', headers: { ...getAuthHeaders() } });
   if (!res.ok) throw new Error('Ошибка анлайка');
   return res.json();
 }
 
+export const getTags = async () => {
+  const res = await fetch(`${API_URL}/tags`);
+  if (!res.ok) throw new Error('Ошибка загрузки тегов');
+  const data = await res.json();
+  return data.tags;
+};
+
 export default {
   getArticles,
+  getArticlesByTag,
   getArticle,
   register: registerUser,
   login: loginUser,
@@ -168,4 +128,5 @@ export default {
   deleteArticle,
   likeArticle,
   unlikeArticle,
+  getTags,
 };

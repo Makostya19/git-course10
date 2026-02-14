@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getArticles, likeArticle, unlikeArticle } from '../services/api';
+import { getArticles, likeArticle, unlikeArticle, getTags } from '../services/api';
 import { useAuth } from '../context/useAuth';
 import DefaultAvatar from './DefaultAvatar';
 
@@ -9,12 +9,14 @@ export default function ArticlesPage() {
   const isAuth = !!user;
 
   const [articles, setArticles] = useState([]);
+  const [tags, setTags] = useState([]);
   const [page, setPage] = useState(1);
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    setLoading(true);
     getArticles(page)
       .then((data) => {
         setArticles(data.articles);
@@ -24,6 +26,12 @@ export default function ArticlesPage() {
       .catch(err => setError(err.message || 'Ошибка загрузки статей'))
       .finally(() => setLoading(false));
   }, [page]);
+
+  useEffect(() => {
+    getTags()
+      .then(setTags)
+      .catch(() => {});
+  }, []);
 
   const pages = Math.ceil(count / 10);
 
@@ -58,10 +66,12 @@ export default function ArticlesPage() {
             padding: '2rem 0'
           }}
         >
-          <h1 className="logo-font" style={{ color: '#FFFFFF', display: 'inline-block', marginBottom: '0.5rem' }}>
+          <h1 className="logo-font" style={{ color: '#FFFFFF', marginBottom: '0.5rem' }}>
             Realworld Blog
           </h1>
-          <p style={{ margin: 0, color: '#FFFFFF' }}>A place to share your knowledge.</p>
+          <p style={{ margin: 0, color: '#FFFFFF' }}>
+            A place to share your knowledge.
+          </p>
         </div>
       </div>
 
@@ -76,31 +86,62 @@ export default function ArticlesPage() {
           textAlign: 'left'
         }}
       >
-        <h5 style={{ marginBottom: '0.5rem', fontSize: '0.9rem', color: '#555' }}>Popular Tags</h5>
-        <div className="tags" style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-          <span className="tag" style={{ backgroundColor: '#ddd', padding: '0.25rem 0.5rem', borderRadius: '12px' }}>react</span>
-          <span className="tag" style={{ backgroundColor: '#ddd', padding: '0.25rem 0.5rem', borderRadius: '12px' }}>javascript</span>
-          <span className="tag" style={{ backgroundColor: '#ddd', padding: '0.25rem 0.5rem', borderRadius: '12px' }}>web</span>
+        <h5 style={{ marginBottom: '0.5rem', fontSize: '0.9rem', color: '#555' }}>
+          Popular Tags
+        </h5>
+
+        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+          {tags.map(tag => (
+            <Link
+              key={tag}
+              to={`/?tag=${tag}`}
+              style={{
+                backgroundColor: '#ddd',
+                padding: '0.25rem 0.5rem',
+                borderRadius: '12px',
+                textDecoration: 'none',
+                color: '#333'
+              }}
+            >
+              {tag}
+            </Link>
+          ))}
         </div>
       </div>
 
       <div className="container page">
         {error && <p style={{ color: 'red' }}>{error}</p>}
+
         <div className="row">
           <div className="col-md-9">
             {loading && <p>Loading...</p>}
 
             {articles.map((article) => (
-              <div className="article-preview" key={article.slug} style={{ marginBottom: '1.5rem' }}>
-                <div className="article-meta" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <div
+                className="article-preview"
+                key={article.slug}
+                style={{ marginBottom: '1.5rem' }}
+              >
+                <div
+                  className="article-meta"
+                  style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                >
                   {article.author.image ? (
-                    <img src={article.author.image} alt={article.author.username} width="32" style={{ borderRadius: '50%' }} />
+                    <img
+                      src={article.author.image}
+                      alt={article.author.username}
+                      width="32"
+                      style={{ borderRadius: '50%' }}
+                    />
                   ) : (
                     <DefaultAvatar width={32} height={32} />
                   )}
+
                   <div className="info">
                     <span className="author">{article.author.username}</span>
-                    <span className="date">{new Date(article.createdAt).toDateString()}</span>
+                    <span className="date">
+                      {new Date(article.createdAt).toDateString()}
+                    </span>
                   </div>
 
                   <div style={{ marginLeft: 'auto' }}>
@@ -122,9 +163,25 @@ export default function ArticlesPage() {
                 </Link>
 
                 {article.tagList && article.tagList.length > 0 && (
-                  <div className="tags" style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginTop: '0.5rem', justifyContent: 'flex-start' }}>
+                  <div
+                    style={{
+                      display: 'flex',
+                      gap: '0.5rem',
+                      flexWrap: 'wrap',
+                      marginTop: '0.5rem'
+                    }}
+                  >
                     {article.tagList.map((tag) => (
-                      <span key={tag} className="tag" style={{ backgroundColor: '#ddd', color: '#555', fontSize: '0.85rem', padding: '0.25rem 0.5rem', borderRadius: '12px' }}>
+                      <span
+                        key={tag}
+                        style={{
+                          backgroundColor: '#ddd',
+                          color: '#555',
+                          fontSize: '0.85rem',
+                          padding: '0.25rem 0.5rem',
+                          borderRadius: '12px'
+                        }}
+                      >
                         {tag}
                       </span>
                     ))}
@@ -135,13 +192,20 @@ export default function ArticlesPage() {
 
             <ul className="pagination">
               {Array.from({ length: pages }).map((_, i) => (
-                <li key={i} className={page === i + 1 ? 'page-item active' : 'page-item'}>
-                  <button className="page-link" onClick={() => setPage(i + 1)}>
+                <li
+                  key={i}
+                  className={page === i + 1 ? 'page-item active' : 'page-item'}
+                >
+                  <button
+                    className="page-link"
+                    onClick={() => setPage(i + 1)}
+                  >
                     {i + 1}
                   </button>
                 </li>
               ))}
             </ul>
+
           </div>
         </div>
       </div>
