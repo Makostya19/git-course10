@@ -4,18 +4,26 @@ import { AuthContext } from './AuthContextBase';
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(() => {
-    return !!localStorage.getItem('token');
-  });
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    if (!token) return;
+    if (!token) {
+      setLoading(false);
+      return;
+    }
 
     api.getCurrentUser()
-      .then((res) => setUser(res.user))
-      .catch(() => localStorage.removeItem('token'))
-      .finally(() => setLoading(false));
+      .then((res) => {
+        setUser(res.user);
+      })
+      .catch(() => {
+        localStorage.removeItem('token');
+        setUser(null);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
   const login = (userData) => {

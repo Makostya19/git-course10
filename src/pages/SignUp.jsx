@@ -12,10 +12,11 @@ export default function SignUp() {
   const onSubmit = async (data) => {
     try {
       const res = await api.register({
-        username: data.username,
         email: data.email,
+        username: data.username,
         password: data.password,
       });
+
       login(res.user);
       navigate('/');
     } catch (e) {
@@ -32,19 +33,26 @@ export default function SignUp() {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <h1>SIGN UP</h1>
+
       <input
         placeholder="Username"
         {...register('username', { required: true, minLength: 3, maxLength: 20 })}
       />
       {errors.username && <p style={{ color: 'red' }}>{errors.username.message}</p>}
-      <input placeholder="Email" {...register('email', { required: true })} />
+
+      <input
+        placeholder="Email"
+        {...register('email', { required: true })}
+      />
       {errors.email && <p style={{ color: 'red' }}>{errors.email.message}</p>}
+
       <input
         type="password"
         placeholder="Password"
         {...register('password', { required: true, minLength: 6, maxLength: 40 })}
       />
       {errors.password && <p style={{ color: 'red' }}>{errors.password.message}</p>}
+
       <input
         type="password"
         placeholder="Repeat password"
@@ -53,10 +61,12 @@ export default function SignUp() {
         })}
       />
       {errors.repeatPassword && <p style={{ color: 'red' }}>{errors.repeatPassword.message}</p>}
+
       <label>
         <input type="checkbox" {...register('agree', { required: 'You must agree' })} /> I agree
       </label>
       {errors.agree && <p style={{ color: 'red' }}>{errors.agree.message}</p>}
+
       <button type="submit">Sign up</button>
     </form>
   );

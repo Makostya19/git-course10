@@ -11,20 +11,14 @@ export default function SignIn() {
 
   const onSubmit = async (data) => {
     try {
-      // API Realworld принимает { user: { email, password } }
       const res = await api.login({
-        user: {
-          email: data.email,
-          password: data.password
-        }
+        email: data.email,
+        password: data.password
       });
 
       login(res.user);
-      localStorage.setItem('token', res.user.token);
-
       navigate('/');
     } catch (e) {
-      // обработка ошибок 422
       if (e?.errors) {
         Object.entries(e.errors).forEach(([field, messages]) => {
           setError(field, { message: messages[0] });
