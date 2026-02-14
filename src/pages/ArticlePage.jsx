@@ -36,6 +36,11 @@ export default function ArticlePage() {
   if (error) return <p style={{ color: 'red' }}>{error}</p>;
   if (!article) return <p>Article not found</p>;
 
+  // 🔥 ТА ЖЕ ЛОГИКА КАК В ArticlesPage, НО БЕЗ БАГА С ПУСТОЙ СТРОКОЙ
+  const hasAvatar =
+    article.author.image &&
+    article.author.image.trim() !== '';
+
   return (
     <div className="article-page">
 
@@ -45,8 +50,16 @@ export default function ArticlePage() {
           <h1>{article.title}</h1>
 
           {/* Article Meta */}
-          <div className="article-meta" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '1rem' }}>
-            {article.author.image ? (
+          <div
+            className="article-meta"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              marginTop: '1rem'
+            }}
+          >
+            {hasAvatar ? (
               <img
                 src={article.author.image}
                 alt={article.author.username}
@@ -60,7 +73,9 @@ export default function ArticlePage() {
 
             <div className="info">
               <span className="author">{article.author.username}</span>
-              <span className="date">{new Date(article.createdAt).toDateString()}</span>
+              <span className="date">
+                {new Date(article.createdAt).toDateString()}
+              </span>
             </div>
 
             <button
@@ -89,8 +104,27 @@ export default function ArticlePage() {
 
       {/* Popular Tags */}
       {tags.length > 0 && (
-        <div className="container" style={{ marginTop: '1rem', padding: '1rem', border: '1px solid #eee', borderRadius: '8px', backgroundColor: '#f9f9f9', textAlign: 'left' }}>
-          <h5 style={{ marginBottom: '0.5rem', fontSize: '0.9rem', color: '#555' }}>Popular Tags</h5>
+        <div
+          className="container"
+          style={{
+            marginTop: '1rem',
+            padding: '1rem',
+            border: '1px solid #eee',
+            borderRadius: '8px',
+            backgroundColor: '#f9f9f9',
+            textAlign: 'left'
+          }}
+        >
+          <h5
+            style={{
+              marginBottom: '0.5rem',
+              fontSize: '0.9rem',
+              color: '#555'
+            }}
+          >
+            Popular Tags
+          </h5>
+
           <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
             {tags.map(tag => (
               <Link
