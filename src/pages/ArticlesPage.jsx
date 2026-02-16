@@ -1,12 +1,21 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { getArticles, likeArticle, unlikeArticle, getTags } from '../services/api';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { getArticles, likeArticle, unlikeArticle, getTags, getArticlesByTag } from '../services/api';
 import { useAuth } from '../context/useAuth';
 import DefaultAvatar from './DefaultAvatar';
 
 export default function ArticlesPage() {
   const { user } = useAuth();
   const isAuth = !!user;
+
+  const location = useLocation();
+  const navigate = useNavigate();
+  const queryParams = new URLSearchParams(location.search);
+  const selectedTagRaw = queryParams.get('tag');
+  const selectedTag =
+    selectedTagRaw && selectedTagRaw.trim() !== '' && selectedTagRaw !== 'null'
+      ? selectedTagRaw
+      : null;
 
   const [articles, setArticles] = useState([]);
   const [tags, setTags] = useState([]);
@@ -17,7 +26,12 @@ export default function ArticlesPage() {
 
   useEffect(() => {
     setLoading(true);
-    getArticles(page)
+
+    const request = selectedTag
+      ? getArticlesByTag(selectedTag, page)
+      : getArticles(page);
+
+    request
       .then((data) => {
         setArticles(data.articles);
         setCount(data.articlesCount);
@@ -25,11 +39,26 @@ export default function ArticlesPage() {
       })
       .catch(err => setError(err.message || 'Ошибка загрузки статей'))
       .finally(() => setLoading(false));
-  }, [page]);
+  }, [page, selectedTag]);
 
   useEffect(() => {
-    getTags()
-      .then(setTags)
+    getArticles(1, 100)
+      .then((data) => {
+        const tagCount = {};
+
+        data.articles.forEach(article => {
+          article.tagList?.forEach(tag => {
+            if (!tag || tag === 'null' || tag.trim() === '') return;
+            tagCount[tag] = (tagCount[tag] || 0) + 1;
+          });
+        });
+
+        const sortedTags = Object.entries(tagCount)
+          .sort((a, b) => b[1] - a[1])
+          .map(item => item[0]);
+
+        setTags(sortedTags.slice(0, 5));
+      })
       .catch(() => {});
   }, []);
 
@@ -91,21 +120,33 @@ export default function ArticlesPage() {
         </h5>
 
         <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-          {tags.map(tag => (
-            <Link
-              key={tag}
-              to={`/?tag=${tag}`}
-              style={{
-                backgroundColor: '#ddd',
-                padding: '0.25rem 0.5rem',
-                borderRadius: '12px',
-                textDecoration: 'none',
-                color: '#333'
-              }}
-            >
-              {tag}
-            </Link>
-          ))}
+          {tags.map(tag => {
+            const isActive = selectedTag === tag;
+
+            return (
+              <button
+                key={tag}
+                onClick={() => {
+                  setPage(1);
+                  if (isActive) {
+                    navigate('/');
+                  } else {
+                    navigate(`/?tag=${tag}`);
+                  }
+                }}
+                style={{
+                  backgroundColor: isActive ? '#3ea55f' : '#ddd',
+                  color: isActive ? '#fff' : '#333',
+                  padding: '0.25rem 0.5rem',
+                  borderRadius: '12px',
+                  border: 'none',
+                  cursor: 'pointer'
+                }}
+              >
+                {tag}
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -171,20 +212,36 @@ export default function ArticlesPage() {
                       marginTop: '0.5rem'
                     }}
                   >
-                    {article.tagList.map((tag) => (
-                      <span
-                        key={tag}
-                        style={{
-                          backgroundColor: '#ddd',
-                          color: '#555',
-                          fontSize: '0.85rem',
-                          padding: '0.25rem 0.5rem',
-                          borderRadius: '12px'
-                        }}
-                      >
-                        {tag}
-                      </span>
-                    ))}
+                    {article.tagList
+                      .filter(tag => tag && tag !== 'null' && tag.trim() !== '')
+                      .map((tag) => {
+                        const isActive = selectedTag === tag;
+
+                        return (
+                          <button
+                            key={tag}
+                            onClick={() => {
+                              setPage(1);
+                              if (isActive) {
+                                navigate('/');
+                              } else {
+                                navigate(`/?tag=${tag}`);
+                              }
+                            }}
+                            style={{
+                              backgroundColor: isActive ? '#3ea55f' : '#ddd',
+                              color: isActive ? '#fff' : '#555',
+                              fontSize: '0.85rem',
+                              padding: '0.25rem 0.5rem',
+                              borderRadius: '12px',
+                              border: 'none',
+                              cursor: 'pointer'
+                            }}
+                          >
+                            {tag}
+                          </button>
+                        );
+                      })}
                   </div>
                 )}
               </div>

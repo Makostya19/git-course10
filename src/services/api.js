@@ -5,8 +5,8 @@ function getAuthHeaders() {
   return token ? { Authorization: `Token ${token}` } : {};
 }
 
-export async function getArticles(page = 1) {
-  const limit = 10;
+export async function getArticles(page = 1, customLimit) {
+  const limit = customLimit || 10;
   const offset = (page - 1) * limit;
   const res = await fetch(`${API_URL}/articles?limit=${limit}&offset=${offset}`);
   if (!res.ok) throw new Error('Ошибка загрузки статей');
@@ -16,7 +16,14 @@ export async function getArticles(page = 1) {
 export async function getArticlesByTag(tag, page = 1) {
   const limit = 10;
   const offset = (page - 1) * limit;
-  const res = await fetch(`${API_URL}/articles?tag=${tag}&limit=${limit}&offset=${offset}`);
+
+  // ✅ ФИКС: кодируем тег
+  const encodedTag = encodeURIComponent(tag);
+
+  const res = await fetch(
+    `${API_URL}/articles?tag=${encodedTag}&limit=${limit}&offset=${offset}`
+  );
+
   if (!res.ok) throw new Error('Ошибка загрузки статей по тегу');
   return res.json();
 }
