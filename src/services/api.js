@@ -17,7 +17,6 @@ export async function getArticlesByTag(tag, page = 1) {
   const limit = 10;
   const offset = (page - 1) * limit;
 
-  // ✅ ФИКС: кодируем тег
   const encodedTag = encodeURIComponent(tag);
 
   const res = await fetch(
@@ -79,10 +78,16 @@ export async function getCurrentUser() {
 }
 
 export async function updateUser(data) {
+  const cleanData = { ...data };
+  if (!cleanData.password) {
+    delete cleanData.password;
+  }
+
   const res = await fetch(`${API_URL}/user`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
-    body: JSON.stringify({ user: data }),
+    // 🔥 ВАЖНО: отправляем плоский объект, без { user: ... }
+    body: JSON.stringify(cleanData),
   });
 
   const json = await res.json();

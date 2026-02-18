@@ -3,7 +3,11 @@ import api from '../services/api';
 import { AuthContext } from './AuthContextBase';
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    const savedUser = localStorage.getItem('user');
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -16,9 +20,11 @@ export function AuthProvider({ children }) {
     api.getCurrentUser()
       .then((res) => {
         setUser(res.user);
+        localStorage.setItem('user', JSON.stringify(res.user)); // ✅ сохраняем user
       })
       .catch(() => {
         localStorage.removeItem('token');
+        localStorage.removeItem('user');
         setUser(null);
       })
       .finally(() => {
@@ -28,11 +34,13 @@ export function AuthProvider({ children }) {
 
   const login = (userData) => {
     localStorage.setItem('token', userData.token);
+    localStorage.setItem('user', JSON.stringify(userData)); // ✅ сохраняем user
     setUser(userData);
   };
 
   const logout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('user'); // ✅ очищаем user
     setUser(null);
   };
 

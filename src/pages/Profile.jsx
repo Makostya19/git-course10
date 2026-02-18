@@ -1,4 +1,5 @@
 import { useForm } from 'react-hook-form';
+import { useEffect } from 'react';
 import api from '../services/api';
 import { useAuth } from '../context/useAuth';
 import DefaultAvatar from "./DefaultAvatar";
@@ -10,29 +11,51 @@ export default function Profile() {
     register,
     handleSubmit,
     setError,
+    reset,
     formState: { errors },
   } = useForm({
     defaultValues: {
-      username: user?.username || '',
-      email: user?.email || '',
-      image: user?.image || '',
+      username: '',
+      email: '',
+      image: '',
+      password: ''
     },
   });
 
+  // ✅ всегда синхронизируем форму с user
+  useEffect(() => {
+    if (user) {
+      reset({
+        username: user.username || '',
+        email: user.email || '',
+        image: user.image || '',
+        password: ''
+      });
+    }
+  }, [user, reset]);
+
   const onSubmit = async (data) => {
     try {
-      // Оборачиваем в user
-      const res = await api.updateUser({ user: data });
+      const cleanData = {
+        username: data.username || '',
+        email: data.email || '',
+        image: data.image || ''
+      };
+
+      if (data.password) {
+        cleanData.password = data.password;
+      }
+
+      const res = await api.updateUser(cleanData);
 
       login(res.user);
-      localStorage.setItem('token', res.user.token);
     } catch (e) {
+      console.log("SERVER ERROR:", e);
+
       if (e?.errors) {
         Object.entries(e.errors).forEach(([field, messages]) => {
           setError(field, { message: messages[0] });
         });
-      } else {
-        console.error('Update user error:', e);
       }
     }
   };
@@ -71,16 +94,11 @@ export default function Profile() {
 
           <input
             type="password"
-            {...register('password', {
-              minLength: { value: 6, message: 'Password must be at least 6 chars' },
-              maxLength: { value: 40, message: 'Password max 40 chars' },
-            })}
+            {...register('password')}
             placeholder="New password"
           />
-          {errors.password && <p style={{ color: 'red' }}>{errors.password.message}</p>}
 
           <input {...register('image')} placeholder="Avatar URL" />
-          {errors.image && <p style={{ color: 'red' }}>{errors.image.message}</p>}
 
           <button type="submit">Save</button>
         </form>

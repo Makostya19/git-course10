@@ -104,17 +104,26 @@ function App() {
         <Route path="/" element={<ArticlesPage />} />
         <Route path="/articles" element={<ArticlesPage />} />
         <Route path="/articles/:slug" element={<ArticleView />} />
+
         <Route
           path="/articles/:slug/edit"
           element={isAuth ? <EditArticle /> : <Navigate to="/sign-in" />}
         />
+
         <Route
           path="/new-article"
           element={isAuth ? <CreateArticle /> : <Navigate to="/sign-in" />}
         />
+
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/sign-up" element={<SignUp />} />
-        {isAuth && <Route path="/profile" element={<Profile />} />}
+
+        {/* исправлено */}
+        <Route
+          path="/profile"
+          element={isAuth ? <Profile /> : <Navigate to="/sign-in" />}
+        />
+
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </>
