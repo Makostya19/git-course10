@@ -3,7 +3,6 @@ import { useParams, Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import { useAuth } from '../context/useAuth';
 import { getArticle, getTags } from '../services/api';
-import DefaultAvatar from './DefaultAvatar';
 
 export default function ArticlePage() {
   const { slug } = useParams();
@@ -38,14 +37,6 @@ export default function ArticlePage() {
   if (error) return <p style={{ color: 'red' }}>{error}</p>;
   if (!article) return <p>Article not found</p>;
 
-  // 🔥 исправленная логика как в ArticlesPage
-  const imageUrl =
-    article.author &&
-    article.author.image &&
-    article.author.image !== ''
-      ? article.author.image
-      : null;
-
   return (
     <div className="article-page">
 
@@ -68,17 +59,24 @@ export default function ArticlePage() {
               marginTop: '1rem'
             }}
           >
-            {imageUrl && !imgError ? (
+            {article.author.image ? (
               <img
-                src={imageUrl}
+                src={article.author.image}
                 alt={article.author.username}
-                width={32}
-                height={32}
+                width="32"
                 style={{ borderRadius: '50%' }}
-                onError={() => setImgError(true)}
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = `https://api.dicebear.com/7.x/initials/svg?seed=${article.author.username}`;
+                }}
               />
             ) : (
-              <DefaultAvatar width={32} height={32} fill="#ffffff" />
+              <img
+                src={`https://api.dicebear.com/7.x/initials/svg?seed=${article.author.username}`}
+                alt={article.author.username}
+                width="32"
+                style={{ borderRadius: '50%' }}
+              />
             )}
 
             <div className="info">

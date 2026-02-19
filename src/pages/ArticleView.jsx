@@ -4,6 +4,7 @@ import { useAuth } from '../context/useAuth';
 import ReactMarkdown from 'react-markdown';
 import api from '../services/api';
 import ConfirmModal from '../components/ConfirmModal';
+import DefaultAvatar from './DefaultAvatar';
 
 export default function ArticleView() {
   const { slug } = useParams();
@@ -62,12 +63,16 @@ export default function ArticleView() {
 
           <div className="article-meta" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             {/* Аватар автора */}
-            <img
-              src={article.author.image || 'https://api.realworld.io/images/smiley-cyrus.jpeg'}
+            {article.author.image ? (
+              <img
+              src={article.author.image}
               alt={article.author.username}
               width="32"
               style={{ borderRadius: '50%' }}
-            />
+              />
+              ) : (
+              <DefaultAvatar width={32} height={32} />
+              )}
             <div className="info">
               <span className="author">{article.author.username}</span>
               <span className="date">{new Date(article.createdAt).toDateString()}</span>
